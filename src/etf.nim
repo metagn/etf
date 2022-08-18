@@ -204,9 +204,15 @@ proc getStr*(term: Term): string =
   of atomTags:
     term.atom.string
   elif term.tag == tagSmallBigInt and term.bigint.data.len == 8:
-    var u: uint64
-    copyMem(addr u, unsafeAddr term.bigint.data[0], 8)
-    $u
+    when defined(js):
+      let d = term.bigint.data
+      var cs: cstring
+      {.emit: "`cs` = new DataView(new Uint8Array(`d`).buffer).getBigInt64().toString();".}
+      $cs
+    else:
+      var u: uint64
+      copyMem(addr u, unsafeAddr term.bigint.data[0], 8)
+      $u
   else:
     raise newException(ValueError, "cannot getStr of term " & $term)
 
