@@ -97,7 +97,7 @@ proc term*(x: sink openarray[Term]): Term = Term(tag: tagList, lst: @x)
 
 proc `==`*(a, b: Atom): bool {.borrow.}
 
-proc `==`*(a, b: Term): bool =
+proc `==`*(a, b: Term): bool {.noSideEffect.} =
   if a.tag != b.tag: return false
   case a.tag
   of tagFloat64:
