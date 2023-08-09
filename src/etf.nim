@@ -84,6 +84,7 @@ type
       bigint*: BigInt
     of tagList:
       lst*: seq[Term]
+      improper*: bool
     of tagNewReference:
       newRef*: NewReference
 
@@ -355,6 +356,7 @@ proc parseSingleTerm*(data: openarray[char], index: var int, header: Header = ni
     let tail = getTerm()
     if tail.tag != tagNil:
       result.lst.add(tail)
+      result.improper = true
   of tagBinary:
     result.bin = newString(readU32().int)
     for m in result.bin.mitems:
@@ -537,7 +539,9 @@ proc toEtf*(term: Term, first = true): string =
     for m in term.bigint.data:
       write(m)
   of tagList:
-    write(term.lst.len.uint32 - 1)
+    write(term.lst.len.uint32 - term.improper.uint32)
     for m in term.lst:
       write(toEtf(m, false))
+    if not term.improper:
+      write(106u8) # nil
   else: raise newException(Exception, "unsupported term output type " & $term.tag)
