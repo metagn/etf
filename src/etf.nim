@@ -92,9 +92,9 @@ proc term*(x: float64): Term = Term(tag: tagFloat64, f64: x)
 proc term*(x: byte): Term = Term(tag: tagUint8, u8: x)
 proc term*(x: int32): Term = Term(tag: tagInt32, i32: x)
 proc binary*(x: string): Term = Term(tag: tagBinary, bin: x)
-proc term*(x: sink openarray[(Term, Term)]): Term = Term(tag: tagMap, map: @x)
+proc term*(x: openarray[(Term, Term)]): Term = Term(tag: tagMap, map: @x)
 proc term*(x: typeof(nil)): Term = Term(tag: tagNil) 
-proc term*(x: sink openarray[Term]): Term = Term(tag: tagList, lst: @x)
+proc term*(x: openarray[Term]): Term = Term(tag: tagList, lst: @x)
 
 proc `==`*(a, b: Atom): bool {.borrow.}
 
